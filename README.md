@@ -11,3 +11,42 @@ The current newspapers that I've setup include the Boston Globe, New York Times,
 The second portion of the software needed to get this running is the Visionect server. Information on the [Visionect docker container and server](https://docs.visionect.com/VisionectSoftwareSuite/Installation.html) are available for install. This has to run on the same network as the eInk display.  The display itself is not standalone, it's a thin client and requires the Visionect software to act as an HTML rendering engine of sorts.  The Visionect server software can be run on any docker server and general installation instructions are on the Visionect site. I was able to get it to run on my Synology server with a slightly modified file. The details of this are in the docker folder of this repo. 
 
 [__Affiliate link to Visionect eInk Display that was used__](https://www.visionect.com/ref/graiz/)
+
+
+# Installation on DietPi
+
+Install DietPI (https://dietpi.com) and install NGINX and PHP
+
+configure /etc/nginx/sites-available/default to have
+
+	location ~ \.php(?:$|/) {
+		fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+		include fastcgi_params;
+		include snippets/fastcgi-php.conf;
+		#fastcgi_pass php;
+  }
+
+Next, create the archive directory and set permissions:
+
+	mkdir /var/www/archive
+ 	chmod 744 /var/www/archive/
+  sudo chown -R www-data /var/www/archive/
+
+Given the Inkplate will only request an image (http://server/archive/image.png) the index.php needs to be called via a script every x minutes
+
+  sudo nano /usr/local/bin/newspaper
+  #!/bin/sh  
+  while true  
+  do  
+    php /var/www/index.php  
+    sleep 300  
+  done
+
+make it executable
+
+  chmod +x /usr/local/bin/newspaper
+
+and schedule via crontab
+  crontab -e
+  @reboot /usr/local/bin/newspaper
+and schedule it via crontab
