@@ -53,6 +53,7 @@ function fetchPaper($prefix, $offset=0){
 	$pathToPdf = "https://cdn.freedomforum.org/dfp/pdf" . date('j',strtotime("-" . $offset . " days")) . "/" . $prefix . ".pdf";
 	$pdffile = "archive/" . $prefix . "_" . date('Ymd',strtotime("-" . $offset . " days")) . ".pdf";
 	$pngfile = "archive/" . $prefix . "_" . date('Ymd',strtotime("-" . $offset . " days")) . ".png";
+	$webfile = "/image.png";
 	$rootpath = getcwd() . "/";
 	// check if a jpg has already been created
 	// if not we start checking for the PDF and converting
@@ -71,8 +72,9 @@ function fetchPaper($prefix, $offset=0){
 		}
 		if ($exists) {
 			$command =  "convert -density 300 -background white -alpha remove '" . $rootpath . $pdffile .
-				   "' -colorspace Gray -resize 1600 '" . $rootpath . $pngfile . "'";
+				   "' -colorspace Gray -resize 825 '" . $rootpath . $pngfile . "'";
 			exec($command, $output, $response);
+
 		}
 	} else {
 		 $exists = true;
@@ -90,12 +92,44 @@ if (isset($_REQUEST['index'])) {
 
 
 $imageresult = fetchPaper($news[$currentIndex]['prefix'],0);  // Fetch today
+
 if (empty($imageresult)) {
 	$imageresult =  fetchPaper($news[$currentIndex]['prefix'],1); // yesterday
 }
 if (empty($imageresult)) {
 	$imageresult =  fetchPaper($news[$currentIndex]['prefix'],2); // twesterday
 }
+
+echo $imageresult;
+
+			// delete old image file (removing symbolic link)
+			$command =  "rm image.png";
+			echo $command;
+			exec($command, $output, $response);
+
+			// create symbolic link to image.png for InkPlate10
+			$command =  "cp $imageresult image.png";
+			echo $command;
+			exec($command, $output, $response);
+
+			// rotate the image to fit InkPlate 10 vertical
+			$command =  "convert image.png -rotate 270 image.png";
+			echo $command;
+			exec($command, $output, $response);
+
+
+			// crop the image to fit InkPlate 10 vertical/horizontal
+			$command =  "convert image.png -crop 1200x+0+0 image.png";
+			echo $command;
+			exec($command, $output, $response);
+
+
+
+			
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
