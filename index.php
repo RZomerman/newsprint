@@ -120,7 +120,11 @@ if (empty($imageresult)) {
 	$imageresult =  fetchPaper($news[$currentIndex]['prefix'],2); // twesterday
 }
 
+// the below is added to support the InkPlate 10 - Inkplate will call just a single image (http://server/archive/image.png) as such the 
+// active newspaper image needs to be copied into image.png and needs to be resized to fit the smaller screen and rotated to be in portrait mode
 echo $imageresult;
+
+
 
 			// delete old image file (removing symbolic link)
 			$command =  "rm archive/image.png";
