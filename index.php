@@ -6,6 +6,16 @@ header("Pragma: no-cache");
 
 date_default_timezone_set('Etc/GMT+4');  // adjust for server timezone
 
+// Let PHP create the archive folder
+ $dir = 'archive';
+
+ // create new directory with 744 permissions if it does not exist yet
+ // owner will be the user/group the PHP script is run under
+ if ( !file_exists($dir) ) {
+     	echo "create dir";
+	mkdir ($dir, 0744);
+ }
+
 // path to paper is base url  +day of month + state + paper + .pdf
 // https://cdn.freedomforum.org/dfp/pdf16/MA_BG.pdf
 
@@ -17,6 +27,16 @@ $paper['prefix']="NY_NYT";$paper['style']="width:99%;margin:-28px 14px 0px 3px";
 $paper['prefix']="CA_LAT";$paper['style']="width:94%;margin:-2% 0px 0px 0px";array_push($news,$paper);  // L.A. Times
 $paper['prefix']="CAN_TS";$paper['style']="width:90%;margin:-70px 0px 0px 0px";array_push($news,$paper);// Toronto Star
 $paper['prefix']="CA_SFC";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // SF Chronical
+
+$paper['prefix']="NET_DV";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // De Volkskrant
+$paper['prefix']="NET_AD2";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // AD
+$paper['prefix']="PHI_BW";$paper['style']="width:96%;margin:-70px 0px 0px 0px";array_push($news,$paper);  // Business Work Phillipines
+$paper['prefix']="NET_HP";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // Het Parool
+
+$paper['prefix']="UAE_TN";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // The National
+$paper['prefix']="UAE_GN";$paper['style']="width:96%;margin:-20px 0px 0px 0px";array_push($news,$paper);  // Gulf News
+
+
 $maxPapers = count($news) -1;
 
 // Loop a counter without a DB.
@@ -103,24 +123,24 @@ if (empty($imageresult)) {
 echo $imageresult;
 
 			// delete old image file (removing symbolic link)
-			$command =  "rm image.png";
-			echo $command;
+			$command =  "rm archive/image.png";
+			// echo $command;
 			exec($command, $output, $response);
 
 			// create symbolic link to image.png for InkPlate10
-			$command =  "cp $imageresult image.png";
-			echo $command;
+			$command =  "cp $imageresult archive/image.png";
+			// echo $command;
 			exec($command, $output, $response);
 
 			// rotate the image to fit InkPlate 10 vertical
-			$command =  "convert image.png -rotate 270 image.png";
-			echo $command;
+			$command =  "convert archive/image.png -rotate 270 archive/image.png";
+			// echo $command;
 			exec($command, $output, $response);
 
 
 			// crop the image to fit InkPlate 10 vertical/horizontal
-			$command =  "convert image.png -crop 1200x+0+0 image.png";
-			echo $command;
+			$command =  "convert archive/image.png -crop 1200x+0+0 archive/image.png";
+			// echo $command;
 			exec($command, $output, $response);
 
 
