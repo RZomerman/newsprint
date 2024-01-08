@@ -30,23 +30,24 @@ Next, create the archive directory and set permissions:
 
 	mkdir /var/www/archive
  	chmod 744 /var/www/archive/
-  sudo chown -R www-data /var/www/archive/
+ 	sudo chown -R www-data /var/www/archive/
 
 Given the Inkplate will only request an image (http://server/archive/image.png) the index.php needs to be called via a script every x minutes
 
-  sudo nano /usr/local/bin/newspaper
-  #!/bin/sh  
-  while true  
-  do  
-    php /var/www/index.php  
-    sleep 300  
-  done
+	sudo nano /usr/local/bin/newspaper
+  	#!/bin/sh  
+  	while true  
+  	do  
+    	php /var/www/index.php  
+    	sleep 300  
+  	done
 
 make it executable
 
-  chmod +x /usr/local/bin/newspaper
+	chmod +x /usr/local/bin/newspaper
 
 and schedule via crontab
-  crontab -e
-  @reboot /usr/local/bin/newspaper
-and schedule it via crontab
+
+	crontab -e
+  	@reboot /usr/local/bin/newspaper
+
